@@ -19,12 +19,13 @@ var io = socketIO(server);
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-  socket.broadcast.emit('newMessage', generateMessage('A new user has joined!', 'Admin'));
-  socket.emit('newMessage', generateMessage('Welcome to my IRC', 'Admin'));
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'A new user has joined!'));
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to my IRC'));
 
-  socket.on('createMessage', (message) => {
-    io.emit('newMessage', generateMessage(message.text, message.from));
-  })
+  socket.on('createMessage', (message, myACK) => {
+    io.emit('newMessage', generateMessage(message.from, message.text));
+    myACK('This is from the server'); // acknowledgement
+  });
 });
 
 
