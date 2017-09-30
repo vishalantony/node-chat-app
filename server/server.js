@@ -18,13 +18,20 @@ var io = socketIO(server);
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-  console.log('New user connected');
+
+  socket.broadcast.emit('newMessage', {
+    text: 'A new user has joined!!',
+    from: 'Admin'
+  });
+  socket.emit('newMessage', {
+    text: 'Welcome to my IRC',
+    from: 'Admin'
+  });
 
   socket.on('createMessage', (message) => {
-    console.log('New message from', message.from);
     message = _.pick(message, ["text", "from"]);
-    message.createdAt = new Date();
-    io.emit('newMessage', message);
+    message.createdAt = new Date().getTime();
+    socket.broadcast.emit('newMessage', message);
   })
 });
 
