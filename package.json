@@ -4,7 +4,8 @@
   "description": "A Node.js chat app.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha server/**/*.test.js",
+    "test-watch": "nodemon --exec 'npm test'",
     "start": "node server/server.js"
   },
   "engines": {
@@ -16,5 +17,9 @@
     "express": "^4.15.5",
     "lodash": "^4.17.4",
     "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "expect": "^1.20.2",
+    "mocha": "^3.0.2"
   }
 }

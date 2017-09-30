@@ -2,9 +2,10 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
-const _ = require('lodash');
 const publicPath = path.join(__dirname, '../public');
 const config = require(path.join(__dirname, 'config', 'config.js'));
+
+const { generateMessage } = require(path.join(__dirname, 'utils', 'message'));
 
 var app = express();
 
@@ -18,20 +19,11 @@ var io = socketIO(server);
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-
-  socket.broadcast.emit('newMessage', {
-    text: 'A new user has joined!!',
-    from: 'Admin'
-  });
-  socket.emit('newMessage', {
-    text: 'Welcome to my IRC',
-    from: 'Admin'
-  });
+  socket.broadcast.emit('newMessage', generateMessage('A new user has joined!', 'Admin'));
+  socket.emit('newMessage', generateMessage('Welcome to my IRC', 'Admin'));
 
   socket.on('createMessage', (message) => {
-    message = _.pick(message, ["text", "from"]);
-    message.createdAt = new Date().getTime();
-    socket.broadcast.emit('newMessage', message);
+    io.emit('newMessage', generateMessage(message.text, message.from));
   })
 });
 
