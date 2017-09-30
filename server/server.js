@@ -5,7 +5,7 @@ const socketIO = require('socket.io');
 const publicPath = path.join(__dirname, '../public');
 const config = require(path.join(__dirname, 'config', 'config.js'));
 
-const { generateMessage } = require(path.join(__dirname, 'utils', 'message'));
+const { generateMessage, generateLocationMessage } = require(path.join(__dirname, 'utils', 'message'));
 
 var app = express();
 
@@ -25,6 +25,14 @@ io.on('connection', (socket) => {
   socket.on('createMessage', (message, myACK) => {
     io.emit('newMessage', generateMessage(message.from, message.text));
     myACK('This is from the server'); // acknowledgement
+  });
+
+  socket.on('createLocation', (coords) => {
+    io.emit('newLocation', generateLocationMessage('User', coords.latitude, coords.longitude));
+  });
+
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'A user has left the chat room.'));
   });
 });
 
