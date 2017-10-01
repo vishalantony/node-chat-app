@@ -17,15 +17,17 @@ var locationButton = jQuery('#send-location');
 // end of DOM elements
 
 socket.on('newMessage', function(message) {
+  let formattedTime = moment(message.createdAt).format('h:mm a');
   var li = jQuery('<li></li>');
-  li.text(`${message.from}: ${message.text}`);
+  li.text(`${message.from} ${formattedTime}: ${message.text}`);
   messageList.append(li);
 });
 
 socket.on('newLocation', function(message) {
+  let formattedTime = moment(message.createdAt).format('h:mm a');
   var li = jQuery('<li></li>');
   var a = jQuery('<a target="_blank">My current location</a>');
-  li.text(`${message.from}: `);
+  li.text(`${message.from} ${formattedTime}: `);
   a.attr('href', message.gmapsURL);
   li.append(a);
   messageList.append(li);
