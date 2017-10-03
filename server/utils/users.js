@@ -16,6 +16,13 @@ class Users {
     return user;
   }
 
+  isUsernameTaken(username) {
+    if(this.users.find(user => user.name === username)) {
+      return true;
+    }
+    return false;
+  }
+
   removeUser(id) {
     let user = this.getUser(id);
     if(user) {

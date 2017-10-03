@@ -20,7 +20,10 @@ io.on('connection', (socket) => {
   socket.on('join', (params, acknowledgement) => {
     if(!isRealString(params.name) || !isRealString(params.room)) {
       return acknowledgement('Name and room name are required');
+    } else if(users.isUsernameTaken(params.name)) {
+      return acknowledgement('Username is already taken');
     }
+    params.room = params.room.toLowerCase();
     socket.join(params.room); // join the room
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
